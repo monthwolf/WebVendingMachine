@@ -15,10 +15,15 @@ export const CondimentCard: React.FC<CondimentCardProps> = ({
 }) => {
   return (
     <Card
-      className={`w-full ${quantity > 0 ? 'border-2 border-secondary' : ''}`}
+      className={`
+        w-full transition-all duration-300
+        ${quantity > 0 ? 'scale-102 shadow-xl border-2 border-secondary' : 'hover:scale-101'}
+        bg-gradient-to-b from-gray-800 to-gray-900
+      `}
     >
       <CardHeader className="p-0 overflow-hidden">
         <div className="relative w-full aspect-[4/3]">
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-50 z-10" />
           <Image
             src={condiment.image}
             alt={condiment.name}
@@ -28,70 +33,82 @@ export const CondimentCard: React.FC<CondimentCardProps> = ({
               img: "w-full h-full object-cover"
             }}
           />
-          <div className="absolute top-2 right-2 z-10">
-            <Chip color="warning" variant="solid" size="sm">
+          <div className="absolute top-2 right-2 z-20">
+            <Chip
+              color="warning"
+              variant="shadow"
+              size="sm"
+              className="font-bold border border-warning/30"
+            >
               ¥{condiment.price.toFixed(2)}
             </Chip>
           </div>
+          {quantity > 0 && (
+            <div className="absolute top-2 left-2 z-20">
+              <Chip
+                color="secondary"
+                variant="shadow"
+                size="sm"
+                className="font-bold border border-secondary/30"
+              >
+                x{quantity}
+              </Chip>
+            </div>
+          )}
         </div>
       </CardHeader>
       
-      <CardBody className="gap-2">
+      <CardBody className="p-2 gap-1">
         <div className="flex justify-between items-start">
-          <h4 className="font-bold text-large">{condiment.name}</h4>
+          <h4 className="font-bold text-medium text-white">{condiment.name}</h4>
         </div>
         
-        <p className="text-small text-default-500 line-clamp-2">
+        <p className="text-xs text-gray-400 line-clamp-2">
           {condiment.description}
         </p>
         
         <div className="flex flex-wrap gap-1">
           <Chip
             size="sm"
-            variant="flat"
-            color="default"
+            variant="bordered"
+            color="warning"
           >
             {condiment.category}
           </Chip>
           <Chip
             size="sm"
-            variant="flat"
-            color="danger"
+            variant="bordered"
+            color="success"
           >
             {condiment.calories} 卡路里
           </Chip>
         </div>
       </CardBody>
       
-      <CardFooter className="gap-2 justify-between">
+      <CardFooter className="justify-between p-2">
         <div className="flex items-center gap-2">
           <Button
-            isIconOnly
             size="sm"
-            variant="light"
-            onPress={() => quantity > 0 && onQuantityChange(quantity - 1)}
-            isDisabled={quantity === 0}
+            variant="flat"
+            color="danger"
+            isIconOnly
+            onPress={() => onQuantityChange(Math.max(0, quantity - 1))}
+            className="bg-danger/20 hover:bg-danger/30"
           >
             -
           </Button>
-          <span className="text-small font-medium w-4 text-center">{quantity}</span>
+          <span className="font-medium text-white w-4 text-center">{quantity}</span>
           <Button
-            isIconOnly
             size="sm"
-            variant="light"
+            variant="flat"
+            color="secondary"
+            isIconOnly
             onPress={() => onQuantityChange(quantity + 1)}
+            className="bg-secondary/20 hover:bg-secondary/30"
           >
             +
           </Button>
         </div>
-        <Button
-          color={quantity > 0 ? "secondary" : "default"}
-          variant={quantity > 0 ? "solid" : "bordered"}
-          size="sm"
-          onPress={() => onQuantityChange(quantity > 0 ? 0 : 1)}
-        >
-          {quantity > 0 ? '已添加' : '添加'}
-        </Button>
       </CardFooter>
     </Card>
   );

@@ -7,7 +7,7 @@ import {
   Image,
   Chip
 } from '@nextui-org/react';
-import { Order, Beverage, Condiment } from '../types';
+import { Order, Beverage, Condiment, OrderItem } from '../types';
 
 interface OrderHistoryProps {
   orders: Order[];
@@ -29,86 +29,95 @@ const statusTextMap = {
   cancelled: '已取消'
 } as const;
 
-export const OrderHistory: React.FC<OrderHistoryProps> = ({ 
-  orders,
-  beverages,
-  condiments
-}) => {
-  if (!orders.length) {
+export const OrderHistory: React.FC<OrderHistoryProps> = ({ orders, beverages, condiments }) => {
+  if (!orders || orders.length === 0) {
     return (
-      <Card className="w-full">
-        <CardBody className="flex flex-col items-center justify-center py-8 text-default-500">
-          <div className="text-3xl mb-3">📝</div>
-          <p>暂无订单历史</p>
+      <Card className="bg-gradient-to-br from-zinc-800 to-zinc-900 text-white shadow-lg">
+        <CardHeader>
+          <h3 className="text-xl font-bold">订单历史</h3>
+        </CardHeader>
+        <CardBody className="text-center text-zinc-400">
+          <p>暂无历史订单。</p>
         </CardBody>
       </Card>
     );
   }
 
   return (
-    <div className="space-y-4">
-      {orders.map((order) => (
-        <Card key={order.id} className="w-full">
-          <CardHeader className="flex justify-between items-center">
-            <div className="flex flex-col">
-              <p className="text-small text-default-500">
-                订单 #{order.id}
-              </p>
-              <p className="text-small text-default-500">
-                {new Date(order.createdAt).toLocaleString()}
-              </p>
-            </div>
-            <Chip
-              color={statusColorMap[order.status]}
-              variant="flat"
-            >
-              {statusTextMap[order.status]}
-            </Chip>
-          </CardHeader>
-          <Divider/>
-          <CardBody>
-            <div className="space-y-4">
-              {order.items.map((item, index) => (
-                <div key={`${item.beverage}-${index}`} className="flex flex-col gap-2">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="font-medium">
-                        {beverages[item.beverage]?.name || item.beverage}
-                      </p>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {item.condiments.map((condiment, idx) => (
-                          <Chip
-                            key={`${condiment.id}-${idx}`}
-                            size="sm"
-                            variant="flat"
-                            color="default"
-                          >
-                            {condiments[condiment.id]?.name || condiment.id} x{condiment.quantity}
-                          </Chip>
-                        ))}
-                      </div>
-                    </div>
-                    <p className="font-medium">
-                      ¥{item.subtotal.toFixed(2)}
-                    </p>
-                  </div>
+    <div className="space-y-6">
+      {orders.map((order) => {
+        const orderItems: OrderItem[] = Array.isArray(order.items) ? order.items : [];
+        const beverageItem = orderItems.find(item => item.type === 'beverage');
+        const beverage = beverageItem ? beverages[beverageItem.id] : null;
+        
+        const condimentItems = orderItems.filter(item => item.type === 'condiment');
+        const condimentsTotal = condimentItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+        return (
+          <Card key={order.id} className="w-full bg-gradient-to-br from-zinc-800 to-zinc-900 text-white shadow-lg border border-zinc-700">
+            <CardHeader className="justify-between items-start">
+              <div className="flex gap-4">
+                {beverage && (
+                    <Image
+                      src={beverage.image}
+                      alt={beverage.name}
+                      width={60}
+                      height={60}
+                      className="rounded-lg object-cover"
+                    />
+                )}
+                <div>
+                  <p className="text-large font-bold">{beverage ? beverage.name : '未知饮品'}</p>
+                  <p className="text-sm text-zinc-400">
+                    {new Date(order.createdAt).toLocaleString()}
+                  </p>
                 </div>
-              ))}
-            </div>
-            <Divider className="my-4"/>
-            <div className="flex justify-end items-center">
-              <Chip
-                color="warning"
-                size="lg"
-                variant="flat"
-                className="font-bold"
-              >
-                总计: ¥{order.total.toFixed(2)}
-              </Chip>
-            </div>
-          </CardBody>
-        </Card>
-      ))}
+              </div>
+              <div className="flex flex-col items-end">
+                <Chip color="success" variant="shadow" className="font-bold">
+                  总计: ¥{order.total.toFixed(2)}
+                </Chip>
+                <span className="text-xs text-zinc-500 mt-1">{order.status}</span>
+              </div>
+            </CardHeader>
+            <Divider className="bg-zinc-700" />
+            <CardBody>
+                <div className="space-y-3">
+                    {beverageItem && (
+                        <div className="flex justify-between items-center text-zinc-300">
+                            <span>{beverage?.name || '饮品'}</span>
+                            <span>¥{beverageItem.price.toFixed(2)}</span>
+                        </div>
+                    )}
+                    
+                    <div className="pl-4 border-l-2 border-zinc-700 space-y-2">
+                      <p className="font-medium text-zinc-400">配料:</p>
+                      {condimentItems.length > 0 ? (
+                        condimentItems.map(item => (
+                            <div key={item.id} className="flex justify-between items-center text-sm text-zinc-300">
+                                <span>{condiments[item.id]?.name || '未知配料'} x {item.quantity}</span>
+                                <span>¥{(item.price * item.quantity).toFixed(2)}</span>
+                            </div>
+                        ))
+                      ) : (
+                        <p className="text-sm text-zinc-500 italic">无额外配料</p>
+                      )}
+                    </div>
+
+                    {condimentItems.length > 0 && (
+                      <>
+                        <Divider className="bg-zinc-700 my-1" />
+                        <div className="flex justify-between items-center font-semibold text-zinc-200">
+                            <span>配料合计</span>
+                            <span>¥{condimentsTotal.toFixed(2)}</span>
+                        </div>
+                      </>
+                    )}
+                </div>
+            </CardBody>
+          </Card>
+        );
+      })}
     </div>
   );
 }; 

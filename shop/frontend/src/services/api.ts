@@ -54,7 +54,7 @@ export const fetchOrderHistory = async (): Promise<ApiResponse<{ history: Order[
 
 // 获取推荐
 export const fetchRecommendation = async (): Promise<ApiResponse<{ recommendation: Recommendation }>> => {
-  const response = await api.get<ApiResponse<{ recommendation: Recommendation }>>('/recommendations');
+  const response = await api.get<ApiResponse<{ recommendation: Recommendation }>>('/recommendation');
   if (!response.data.success) {
     throw new Error(response.data.error || '获取推荐失败');
   }

@@ -26,9 +26,10 @@ export type OrderStatus = 'pending' | 'processing' | 'completed' | 'cancelled';
 
 // 订单项类型
 export interface OrderItem {
-  beverage: string;
-  condiments: { id: string; quantity: number; }[];
-  subtotal: number;
+  id: string;
+  quantity: number;
+  type: 'beverage' | 'condiment';
+  price: number;
 }
 
 // 订单类型

@@ -17,11 +17,16 @@ export const BeverageCard: React.FC<BeverageCardProps> = ({
     <Card
       isPressable
       isHoverable
-      className={`w-full ${isSelected ? 'border-2 border-secondary' : ''}`}
+      className={`
+        w-full transition-all duration-300
+        ${isSelected ? 'scale-105 shadow-xl border-2 border-primary' : 'hover:scale-102'}
+        bg-gradient-to-b from-gray-800 to-gray-900
+      `}
       onPress={onSelect}
     >
       <CardHeader className="p-0 overflow-hidden">
         <div className="relative w-full aspect-[4/3]">
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-50 z-10" />
           <Image
             src={beverage.image}
             alt={beverage.name}
@@ -31,57 +36,59 @@ export const BeverageCard: React.FC<BeverageCardProps> = ({
               img: "w-full h-full object-cover"
             }}
           />
-          <div className="absolute top-2 right-2 z-10">
-            <Chip color="warning" variant="solid" size="sm">
+          <div className="absolute top-2 right-2 z-20">
+            <Chip
+              color="warning"
+              variant="shadow"
+              size="sm"
+              className="font-bold border border-warning/30"
+            >
               ¥{beverage.price.toFixed(2)}
             </Chip>
           </div>
+          {isSelected && (
+            <div className="absolute inset-0 bg-primary/20 z-10 flex items-center justify-center">
+              <div className="bg-primary text-white px-4 py-2 rounded-full font-bold transform -rotate-12">
+                已选择
+              </div>
+            </div>
+          )}
         </div>
       </CardHeader>
       
       <CardBody className="gap-2">
         <div className="flex justify-between items-start">
-          <h4 className="font-bold text-large">{beverage.name}</h4>
+          <h4 className="font-bold text-large text-white">{beverage.name}</h4>
         </div>
         
-        <p className="text-small text-default-500 line-clamp-2">
+        <p className="text-small text-gray-400 line-clamp-2">
           {beverage.description}
         </p>
         
         <div className="flex flex-wrap gap-1">
           <Chip
             size="sm"
-            variant="flat"
+            variant="bordered"
             color={beverage.hot ? "danger" : "secondary"}
           >
             {beverage.hot ? "热饮" : "冷饮"}
           </Chip>
           <Chip
             size="sm"
-            variant="flat"
-            color="default"
+            variant="bordered"
+            color="warning"
           >
             {beverage.category}
           </Chip>
-        </div>
-      </CardBody>
-      
-      <CardFooter className="gap-2 justify-between">
-        <div className="flex items-center gap-1">
-          <span className="text-default-500 text-small">热量:</span>
-          <Chip size="sm" variant="flat" color="danger">
+          <Chip
+            size="sm"
+            variant="bordered"
+            color="success"
+          >
             {beverage.calories} 卡路里
           </Chip>
         </div>
-        <Button
-          color={isSelected ? "secondary" : "default"}
-          variant={isSelected ? "solid" : "bordered"}
-          size="sm"
-          onPress={onSelect}
-        >
-          {isSelected ? '已选择' : '选择'}
-        </Button>
-      </CardFooter>
+      </CardBody>
     </Card>
   );
 }; 

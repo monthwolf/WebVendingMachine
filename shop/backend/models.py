@@ -40,9 +40,10 @@ class CondimentQuantity:
 
 @dataclass
 class OrderItem:
-    beverage: str
-    condiments: List[CondimentQuantity]
-    subtotal: float
+    id: str
+    type: str  # 'beverage' or 'condiment'
+    quantity: int
+    price: float # Price of a single unit at the time of order
 
 @dataclass
 class OrderModel:
@@ -58,12 +59,10 @@ class OrderModel:
             "id": self.id,
             "items": [
                 {
-                    "beverage": item.beverage,
-                    "condiments": [
-                        {"id": c.id, "quantity": c.quantity}
-                        for c in item.condiments
-                    ],
-                    "subtotal": item.subtotal
+                    "id": item.id,
+                    "type": item.type,
+                    "quantity": item.quantity,
+                    "price": item.price,
                 }
                 for item in self.items
             ],
