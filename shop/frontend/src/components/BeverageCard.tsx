@@ -17,25 +17,31 @@ export const BeverageCard: React.FC<BeverageCardProps> = ({
     <Card
       isPressable
       isHoverable
-      className={`w-full ${isSelected ? 'border-2 border-primary' : ''}`}
+      className={`w-full ${isSelected ? 'border-2 border-secondary' : ''}`}
       onPress={onSelect}
     >
-      {beverage.image && (
-        <CardHeader className="p-0">
+      <CardHeader className="p-0 overflow-hidden">
+        <div className="relative w-full aspect-[4/3]">
           <Image
             src={beverage.image}
             alt={beverage.name}
-            className="w-full h-48 object-cover"
+            radius="none"
+            classNames={{
+              wrapper: "!w-full !h-full",
+              img: "w-full h-full object-cover"
+            }}
           />
-        </CardHeader>
-      )}
+          <div className="absolute top-2 right-2 z-10">
+            <Chip color="warning" variant="solid" size="sm">
+              ¥{beverage.price.toFixed(2)}
+            </Chip>
+          </div>
+        </div>
+      </CardHeader>
       
       <CardBody className="gap-2">
         <div className="flex justify-between items-start">
           <h4 className="font-bold text-large">{beverage.name}</h4>
-          <Chip color="warning" variant="flat" size="sm">
-            ¥{beverage.price.toFixed(2)}
-          </Chip>
         </div>
         
         <p className="text-small text-default-500 line-clamp-2">
@@ -68,7 +74,7 @@ export const BeverageCard: React.FC<BeverageCardProps> = ({
           </Chip>
         </div>
         <Button
-          color={isSelected ? "primary" : "default"}
+          color={isSelected ? "secondary" : "default"}
           variant={isSelected ? "solid" : "bordered"}
           size="sm"
           onPress={onSelect}

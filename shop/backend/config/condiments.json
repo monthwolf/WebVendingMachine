@@ -1,0 +1,101 @@
+{
+  "milk": {
+    "id": "milk",
+    "category": "dairy",
+    "name": "牛奶",
+    "price": 3,
+    "description": "新鲜牛奶",
+    "calories": 60,
+    "image": "/images/condiments/milk.png"
+  },
+  "soymilk": {
+    "id": "soymilk",
+    "category": "dairy",
+    "name": "豆浆",
+    "price": 3,
+    "description": "纯天然豆浆",
+    "calories": 45,
+    "image": "/images/condiments/soymilk.png"
+  },
+  "ice": {
+    "id": "ice",
+    "category": "other",
+    "name": "冰块",
+    "price": 0,
+    "description": "清凉冰块",
+    "calories": 0,
+    "image": "/images/condiments/ice.png"
+  },
+  "sugar": {
+    "id": "sugar",
+    "category": "sweetener",
+    "name": "糖",
+    "price": 1,
+    "description": "白砂糖",
+    "calories": 30,
+    "image": "/images/condiments/sugar.png"
+  },
+  "honey": {
+    "id": "honey",
+    "category": "sweetener",
+    "name": "蜂蜜",
+    "price": 3,
+    "description": "天然蜂蜜",
+    "calories": 45,
+    "image": "/images/condiments/honey.png"
+  },
+  "cream": {
+    "id": "cream",
+    "category": "dairy",
+    "name": "奶油",
+    "price": 4,
+    "description": "香浓奶油",
+    "calories": 120,
+    "image": "/images/condiments/cream.png"
+  },
+  "chocolate": {
+    "id": "chocolate",
+    "category": "syrup",
+    "name": "巧克力酱",
+    "price": 4,
+    "description": "浓郁巧克力酱",
+    "calories": 80,
+    "image": "/images/condiments/chocolate.png"
+  },
+  "caramel": {
+    "id": "caramel",
+    "category": "syrup",
+    "name": "焦糖糖浆",
+    "price": 4,
+    "description": "焦糖风味糖浆",
+    "calories": 60,
+    "image": "/images/condiments/caramel.png"
+  },
+  "vanilla": {
+    "id": "vanilla",
+    "category": "syrup",
+    "name": "香草糖浆",
+    "price": 4,
+    "description": "香草风味糖浆",
+    "calories": 50,
+    "image": "/images/condiments/vanilla.png"
+  },
+  "cinnamon": {
+    "id": "cinnamon",
+    "category": "topping",
+    "name": "肉桂粉",
+    "price": 2,
+    "description": "增添温暖香料风味",
+    "calories": 5,
+    "image": "/images/condiments/cinnamon.png"
+  },
+  "coconut": {
+    "id": "coconut",
+    "category": "dairy",
+    "name": "椰奶",
+    "price": 4,
+    "description": "香浓椰子奶",
+    "calories": 70,
+    "image": "/images/condiments/coconut.png"
+  }
+}
