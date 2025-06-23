@@ -29,6 +29,8 @@ import beverages from './config/beverages';
 import condiments from './config/condiments';
 import { ControlPanel } from './components/ControlPanel';
 
+type OrderFlowStatus = 'ready' | 'selecting' | 'processing' | 'dispensing';
+
 interface CondimentQuantity {
   id: string;
   quantity: number;
@@ -52,6 +54,13 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>("vending");
 
+  // New states for ControlPanel interactivity
+  const [keypadInput, setKeypadInput] = useState('');
+  const [orderFlowStatus, setOrderFlowStatus] = useState<OrderFlowStatus>('ready');
+
+  // Map for beverage codes (e.g., 'A1' -> 'americano')
+  const [beverageCodeMap, setBeverageCodeMap] = useState<Record<string, string>>({});
+
   // 获取饮料和配料数据
   useEffect(() => {
     const fetchData = async () => {
@@ -62,12 +71,86 @@ const App: React.FC = () => {
         ]);
         setBeverages(beveragesData);
         setCondiments(condimentsData);
+
+        // Create beverage code map
+        const codeMap: Record<string, string> = {};
+        const beverageEntries = Object.keys(beveragesData);
+        const beverageRows = chunk(beverageEntries, 3);
+        beverageRows.forEach((row, rowIndex) => {
+          row.forEach((beverageId, colIndex) => {
+            const code = `${String.fromCharCode(65 + rowIndex)}${colIndex + 1}`;
+            codeMap[code] = beverageId;
+          });
+        });
+        setBeverageCodeMap(codeMap);
+
       } catch (error) {
         console.error('获取数据失败:', error);
       }
     };
     fetchData();
   }, []);
+
+  // Update order flow status based on app state
+  useEffect(() => {
+    if (loading) {
+      setOrderFlowStatus('processing');
+    } else if (selectedBeverage) {
+      setOrderFlowStatus('selecting');
+    } else {
+      setOrderFlowStatus('ready');
+    }
+  }, [selectedBeverage, loading]);
+  
+  // Handlers for Control Panel
+  const handleInteractionStart = () => {
+    if(selectedBeverage) {
+      setSelectedBeverage(null);
+    }
+  }
+
+  const handleKeypadPress = (key: string) => {
+    handleInteractionStart();
+    const currentLetter = keypadInput.match(/^[A-Z]/);
+    const currentDigits = keypadInput.match(/\d/g) || [];
+    
+    if (/[A-Z]/.test(key)) {
+       setKeypadInput(key);
+    } else if (/\d/.test(key) && currentLetter && currentDigits.length < 1) {
+       setKeypadInput(prev => `${prev}${key}`);
+    } else if (!currentLetter && beverageRows.length > 0) {
+      // If no letter, start with A and the number
+      setKeypadInput(`A${key}`);
+    }
+  };
+
+  const handleRowChange = (direction: 'up' | 'down') => {
+    handleInteractionStart();
+    const rows = beverageRows.map((_, i) => String.fromCharCode(65 + i));
+    if (rows.length === 0) return;
+    
+    const currentLetter = keypadInput.match(/^[A-Z]/);
+    let currentIndex = currentLetter ? rows.indexOf(currentLetter[0]) : -1;
+
+    if (direction === 'up') {
+      currentIndex = currentIndex <= 0 ? rows.length - 1 : currentIndex - 1;
+    } else {
+      currentIndex = currentIndex >= rows.length - 1 ? 0 : currentIndex + 1;
+    }
+    setKeypadInput(rows[currentIndex]);
+  }
+
+  const handleKeypadClear = () => {
+    setKeypadInput('');
+  };
+
+  const handleKeypadEnter = () => {
+    const beverageId = beverageCodeMap[keypadInput.toUpperCase()];
+    if (beverageId) {
+      handleBeverageSelect(beverageId);
+    }
+    setKeypadInput('');
+  };
 
   // 获取推荐
   const fetchRecommendationData = useCallback(async () => {
@@ -141,11 +224,15 @@ const App: React.FC = () => {
       const response = await placeOrder(selectedBeverage, selectedCondiments);
       if (response.success && response.data) {
         setOrder(response.data.order);
-        setSelectedBeverage(null);
-        setSelectedCondiments([]);
-        setShowCondiments(false);
-        fetchHistoryData();
-        fetchRecommendationData();
+        setOrderFlowStatus('dispensing');
+        setTimeout(() => {
+          setSelectedBeverage(null);
+          setSelectedCondiments([]);
+          setShowCondiments(false);
+          setOrder(null);
+          fetchHistoryData();
+          setOrderFlowStatus('ready');
+        }, 2500);
       }
     } catch (error) {
       console.error('Failed to place order:', error);
@@ -154,8 +241,12 @@ const App: React.FC = () => {
     }
   };
 
-  const beverageRows = chunk(Object.entries(beverages), 3);
-  const condimentRows = chunk(Object.entries(condiments), 3);
+  const getBeverageCode = (beverageId: string): string | null => {
+    return Object.keys(beverageCodeMap).find(code => beverageCodeMap[code] === beverageId) || null;
+  }
+
+  const beverageRows = chunk(Object.keys(beverages), 3);
+  const condimentRows = chunk(Object.keys(condiments), 3);
 
   // Panel for Beverage Selection
   const beverageSection = (
@@ -172,24 +263,33 @@ const App: React.FC = () => {
       </div>
       <div className="flex flex-col gap-4">
         {beverageRows.map((row, rowIndex) => (
-          <div key={`bev-row-${rowIndex}`}>
-            <div className="grid grid-cols-3 gap-4">
-              {row.map(([id, beverage]) => (
-                <div key={id} className="flex flex-col items-center gap-2">
-                  <BeverageCard
-                    beverage={{ ...(beverage as Beverage), id }}
-                    isSelected={selectedBeverage === id}
-                    onSelect={() => handleBeverageSelect(id)}
-                  />
-                  <div
-                    className={`h-2 w-8 rounded-full transition-colors duration-300 ${
-                      selectedBeverage === id ? 'bg-green-500 shadow-lg shadow-green-500/50' : 'bg-gray-700'
-                    }`}
-                  />
-                </div>
-              ))}
+          <div key={`bev-row-${rowIndex}`} className="flex items-center gap-4">
+            <div className="font-mono text-4xl font-bold text-gray-700">
+              {String.fromCharCode(65 + rowIndex)}
             </div>
-            <div className="mt-2 h-2 w-full bg-gradient-to-r from-gray-600 via-gray-500 to-gray-600 rounded-full shadow-inner" />
+            <div className="flex-1">
+              <div className="grid grid-cols-3 gap-4">
+                {row.map((beverageId) => {
+                  const code = getBeverageCode(beverageId);
+                  return (
+                    <div key={beverageId} className="flex flex-col items-center gap-2">
+                      <BeverageCard
+                        beverage={{ ...(beverages[beverageId] as Beverage), id: beverageId }}
+                        code={code}
+                        isSelected={selectedBeverage === beverageId}
+                        onSelect={() => handleBeverageSelect(beverageId)}
+                      />
+                      <div
+                        className={`h-2 w-8 rounded-full transition-colors duration-300 ${
+                          selectedBeverage === beverageId ? 'bg-green-500 shadow-lg shadow-green-500/50' : 'bg-gray-700'
+                        }`}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-2 h-2 w-full bg-gradient-to-r from-gray-600 via-gray-500 to-gray-600 rounded-full shadow-inner" />
+            </div>
           </div>
         ))}
       </div>
@@ -209,14 +309,14 @@ const App: React.FC = () => {
         {condimentRows.map((row, rowIndex) => (
           <div key={`cond-row-${rowIndex}`}>
             <div className="grid grid-cols-3 gap-4">
-              {row.map(([id, condiment]) => {
-                const selected = selectedCondiments.find(c => c.id === id);
+              {row.map((condimentId) => {
+                const selected = selectedCondiments.find(c => c.id === condimentId);
                 return (
                   <CondimentCard
-                    key={id}
-                    condiment={{ ...(condiment as Condiment), id }}
+                    key={condimentId}
+                    condiment={{ ...(condiments[condimentId] as Condiment), id: condimentId }}
                     quantity={selected?.quantity || 0}
-                    onQuantityChange={(q) => handleCondimentQuantityChange(id, q)}
+                    onQuantityChange={(q) => handleCondimentQuantityChange(condimentId, q)}
                   />
                 );
               })}
@@ -242,6 +342,13 @@ const App: React.FC = () => {
           isLoading={loading}
         />
       }
+      selectedBeverageCode={selectedBeverage ? getBeverageCode(selectedBeverage) : null}
+      keypadInput={keypadInput}
+      orderStatus={orderFlowStatus}
+      onKeypadPress={handleKeypadPress}
+      onClearPress={handleKeypadClear}
+      onEnterPress={handleKeypadEnter}
+      onRowChange={handleRowChange}
     />
   );
 

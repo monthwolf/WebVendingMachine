@@ -90,10 +90,10 @@ export const CondimentCard: React.FC<CondimentCardProps> = ({
           <Button
             size="sm"
             variant="flat"
-            color="danger"
+            color="default"
             isIconOnly
             onPress={() => onQuantityChange(Math.max(0, quantity - 1))}
-            className="bg-danger/20 hover:bg-danger/30"
+            className="bg-danger/50 hover:bg-danger/60 font-bold text-lg flex items-center justify-center text-white"
           >
             -
           </Button>
@@ -101,10 +101,10 @@ export const CondimentCard: React.FC<CondimentCardProps> = ({
           <Button
             size="sm"
             variant="flat"
-            color="secondary"
+            color="default"
             isIconOnly
             onPress={() => onQuantityChange(quantity + 1)}
-            className="bg-secondary/20 hover:bg-secondary/30"
+            className="bg-secondary/50 hover:bg-secondary/60 font-bold text-lg flex items-center justify-center text-white"
           >
             +
           </Button>

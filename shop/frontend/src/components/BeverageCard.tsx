@@ -4,12 +4,14 @@ import { Beverage } from '../types';
 
 export interface BeverageCardProps {
   beverage: Beverage;
+  code: string | null;
   isSelected: boolean;
   onSelect: () => void;
 }
 
 export const BeverageCard: React.FC<BeverageCardProps> = ({
   beverage,
+  code,
   isSelected,
   onSelect
 }) => {
@@ -36,6 +38,18 @@ export const BeverageCard: React.FC<BeverageCardProps> = ({
               img: "w-full h-full object-cover"
             }}
           />
+          {code && (
+            <div className="absolute top-2 left-2 z-20">
+              <Chip
+                color="secondary"
+                variant="shadow"
+                size="sm"
+                className="font-mono font-bold border border-white/20"
+              >
+                {code}
+              </Chip>
+            </div>
+          )}
           <div className="absolute top-2 right-2 z-20">
             <Chip
               color="warning"

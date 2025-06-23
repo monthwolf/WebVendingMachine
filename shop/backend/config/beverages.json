@@ -59,16 +59,6 @@
     "hot": false,
     "image": "/images/beverages/sprite.png"
   },
-  "greenTea": {
-    "id": "greenTea",
-    "category": "tea",
-    "name": "绿茶",
-    "price": 15,
-    "description": "清香淡雅的日式绿茶",
-    "calories": 0,
-    "hot": true,
-    "image": "/images/beverages/green-tea.png"
-  },
   "blackTea": {
     "id": "blackTea",
     "category": "tea",
