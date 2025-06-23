@@ -1,0 +1,106 @@
+import { Beverage } from '../types';
+
+const beverages: Record<string, Beverage> = {
+  coffee: {
+    id: 'coffee',
+    category: 'coffee',
+    name: '经典咖啡',
+    price: 18,
+    description: '使用优质阿拉比卡咖啡豆现磨制作',
+    calories: 5,
+    hot: true,
+    image: '/images/beverages/coffee.png'
+  },
+  latte: {
+    id: 'latte',
+    category: 'coffee',
+    name: '拿铁咖啡',
+    price: 22,
+    description: '浓缩咖啡与蒸煮牛奶的完美结合',
+    calories: 120,
+    hot: true,
+    image: '/images/beverages/latte.png'
+  },
+  americano: {
+    id: 'americano',
+    category: 'coffee',
+    name: '美式咖啡',
+    price: 20,
+    description: '清淡醇厚的黑咖啡',
+    calories: 10,
+    hot: true,
+    image: '/images/beverages/americano.png'
+  },
+  mocha: {
+    id: 'mocha',
+    category: 'coffee',
+    name: '摩卡咖啡',
+    price: 25,
+    description: '咖啡与巧克力的甜蜜邂逅',
+    calories: 200,
+    hot: true,
+    image: '/images/beverages/mocha.png'
+  },
+  cola: {
+    id: 'cola',
+    category: 'soda',
+    name: '可乐',
+    price: 12,
+    description: '经典汽水饮料',
+    calories: 140,
+    hot: false,
+    image: '/images/beverages/cola.png'
+  },
+  sprite: {
+    id: 'sprite',
+    category: 'soda',
+    name: '雪碧',
+    price: 12,
+    description: '清爽柠檬味汽水',
+    calories: 140,
+    hot: false,
+    image: '/images/beverages/sprite.png'
+  },
+  greenTea: {
+    id: 'greenTea',
+    category: 'tea',
+    name: '绿茶',
+    price: 15,
+    description: '清香淡雅的日式绿茶',
+    calories: 0,
+    hot: true,
+    image: '/images/beverages/green-tea.png'
+  },
+  blackTea: {
+    id: 'blackTea',
+    category: 'tea',
+    name: '红茶',
+    price: 15,
+    description: '浓郁芳香的锡兰红茶',
+    calories: 0,
+    hot: true,
+    image: '/images/beverages/black-tea.png'
+  },
+  orangeJuice: {
+    id: 'orangeJuice',
+    category: 'juice',
+    name: '鲜榨橙汁',
+    price: 20,
+    description: '100%纯鲜榨橙汁',
+    calories: 120,
+    hot: false,
+    image: '/images/beverages/orange-juice.png'
+  },
+  appleJuice: {
+    id: 'appleJuice',
+    category: 'juice',
+    name: '苹果汁',
+    price: 18,
+    description: '清甜可口的苹果汁',
+    calories: 110,
+    hot: false,
+    image: '/images/beverages/apple-juice.png'
+  }
+};
+
+export default beverages; 
