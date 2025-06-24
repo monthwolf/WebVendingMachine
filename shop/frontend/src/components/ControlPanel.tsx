@@ -90,7 +90,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                    {displayValue}
                 </div>
              </div>
-             <div className="grid grid-cols-3 gap-1">
+             <div className="grid grid-cols-3 gap-1 place-items-center">
                 {'123456789'.split('').map((num) => (
                    <Button key={num} isIconOnly size="sm" className="bg-gray-700 text-gray-300" onPress={() => onKeypadPress(num)}>{num}</Button>
                 ))}

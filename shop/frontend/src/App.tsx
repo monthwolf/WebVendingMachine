@@ -53,6 +53,7 @@ const App: React.FC = () => {
   const [orderHistory, setOrderHistory] = useState<Order[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>("vending");
+  const [dispensedBeverage, setDispensedBeverage] = useState<Beverage | null>(null);
 
   // New states for ControlPanel interactivity
   const [keypadInput, setKeypadInput] = useState('');
@@ -93,14 +94,16 @@ const App: React.FC = () => {
 
   // Update order flow status based on app state
   useEffect(() => {
-    if (loading) {
+    if (dispensedBeverage) {
+      setOrderFlowStatus('dispensing');
+    } else if (loading) {
       setOrderFlowStatus('processing');
     } else if (selectedBeverage) {
       setOrderFlowStatus('selecting');
     } else {
       setOrderFlowStatus('ready');
     }
-  }, [selectedBeverage, loading]);
+  }, [selectedBeverage, loading, dispensedBeverage]);
   
   // Handlers for Control Panel
   const handleInteractionStart = () => {
@@ -224,19 +227,33 @@ const App: React.FC = () => {
       const response = await placeOrder(selectedBeverage, selectedCondiments);
       if (response.success && response.data) {
         setOrder(response.data.order);
-        setOrderFlowStatus('dispensing');
+        setOrderFlowStatus('processing');
+        
+        // --- Animation Sequence ---
+        // 1. After 'processing' delay, switch to 'dispensing'
         setTimeout(() => {
-          setSelectedBeverage(null);
-          setSelectedCondiments([]);
-          setShowCondiments(false);
-          setOrder(null);
-          fetchHistoryData();
-          setOrderFlowStatus('ready');
-        }, 2500);
+          setDispensedBeverage(beverages[selectedBeverage]);
+          setOrderFlowStatus('dispensing');
+          // Scroll to bottom to show the outlet
+          window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
+          // 2. After animation duration, reset everything
+          setTimeout(() => {
+            setOrderFlowStatus('ready');
+            setSelectedBeverage(null);
+            setSelectedCondiments([]);
+            setOrder(null);
+            fetchHistoryData();
+            setDispensedBeverage(null);
+            setLoading(false);
+            // Scroll back to top
+             window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 4000); // Duration for dispensing animation
+        }, 2000); // Duration for processing
+
       }
     } catch (error) {
       console.error('Failed to place order:', error);
-    } finally {
       setLoading(false);
     }
   };
@@ -369,6 +386,8 @@ const App: React.FC = () => {
             <VendingMachineContainer
               mainPanel={showCondiments && selectedBeverage ? condimentSection : beverageSection}
               sidePanel={sidePanel}
+              orderFlowStatus={orderFlowStatus}
+              dispensedBeverageImage={dispensedBeverage?.image || null}
             />
           </Tab>
           <Tab key="history" title="历史订单">
