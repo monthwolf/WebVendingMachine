@@ -19,14 +19,11 @@ import {
   fetchBeverages,
   fetchCondiments,
   placeOrder,
-  fetchOrderHistory,
-  fetchRecommendation
+  fetchOrderHistory
 } from './services/api';
-import { Beverage, Condiment, Order, Recommendation } from './types';
+import { Beverage, Condiment, Order } from './types';
 import VendingMachineContainer from './components/VendingMachineContainer';
 import './App.css';
-import beverages from './config/beverages';
-import condiments from './config/condiments';
 import { ControlPanel } from './components/ControlPanel';
 
 type OrderFlowStatus = 'ready' | 'selecting' | 'processing' | 'dispensing';
@@ -49,7 +46,6 @@ const App: React.FC = () => {
   const [showCondiments, setShowCondiments] = useState(false);
   const [selectedCondiments, setSelectedCondiments] = useState<CondimentQuantity[]>([]);
   const [order, setOrder] = useState<Order | null>(null);
-  const [recommendation, setRecommendation] = useState<Recommendation | null>(null);
   const [orderHistory, setOrderHistory] = useState<Order[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>("vending");
@@ -91,6 +87,22 @@ const App: React.FC = () => {
     };
     fetchData();
   }, []);
+
+  // 获取历史订单
+  const fetchHistoryData = useCallback(async () => {
+    try {
+      const response = await fetchOrderHistory();
+      if (response.success && response.data) {
+        setOrderHistory(response.data.history);
+      }
+    } catch (error) {
+      console.error('获取历史订单失败:', error);
+    }
+  }, []);
+  
+  useEffect(() => {
+    fetchHistoryData();
+  }, [fetchHistoryData]);
 
   // Update order flow status based on app state
   useEffect(() => {
@@ -155,35 +167,6 @@ const App: React.FC = () => {
     setKeypadInput('');
   };
 
-  // 获取推荐
-  const fetchRecommendationData = useCallback(async () => {
-    try {
-      const response = await fetchRecommendation();
-      if (response.success && response.data) {
-        setRecommendation(response.data.recommendation);
-      }
-    } catch (error) {
-      console.error('获取推荐失败:', error);
-    }
-  }, []);
-
-  // 获取历史订单
-  const fetchHistoryData = useCallback(async () => {
-    try {
-      const response = await fetchOrderHistory();
-      if (response.success && response.data) {
-        setOrderHistory(response.data.history);
-      }
-    } catch (error) {
-      console.error('获取历史订单失败:', error);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchHistoryData();
-    fetchRecommendationData();
-  }, [fetchHistoryData, fetchRecommendationData]);
-
   const handleBeverageSelect = (beverageId: string) => {
     if (selectedBeverage === beverageId) {
       setSelectedBeverage(null);
@@ -218,6 +201,13 @@ const App: React.FC = () => {
   
   const handleGoToBeverages = () => {
     setShowCondiments(false);
+  };
+
+  const handleClearOrder = () => {
+    setSelectedBeverage(null);
+    setSelectedCondiments([]);
+    setShowCondiments(false);
+    setOrder(null);
   };
 
   const handlePlaceOrder = async () => {
@@ -271,7 +261,7 @@ const App: React.FC = () => {
       <div className="mb-4 flex justify-between items-center">
         <h2 className="text-xl font-bold text-white">选择饮品</h2>
         {selectedBeverage ? (
-          <Button color="warning" variant="shadow" onPress={handleGoToCondiments}>
+          <Button color="warning" variant="shadow" onPress={handleGoToCondiments} data-action="add-condiments">
             选择配料
           </Button>
         ) : (
@@ -357,6 +347,7 @@ const App: React.FC = () => {
           order={order}
           onPlaceOrder={handlePlaceOrder}
           isLoading={loading}
+          onClearOrder={handleClearOrder}
         />
       }
       selectedBeverageCode={selectedBeverage ? getBeverageCode(selectedBeverage) : null}

@@ -221,6 +221,7 @@ export const CondimentCard: React.FC<CondimentCardProps> = ({
       ref={cardRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      data-condiment-id={condiment.id}
     >
       <CardHeader className="p-0 overflow-hidden">
         <div ref={imageRef} className="relative w-full aspect-[4/3]">
@@ -289,29 +290,35 @@ export const CondimentCard: React.FC<CondimentCardProps> = ({
       </CardBody>
       
       <CardFooter className="justify-between p-2">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between gap-2">
           <Button
+            isIconOnly
             size="sm"
             variant="flat"
-            color="default"
-            isIconOnly
-            ref={buttonMinusRef}
+            className="bg-gray-700/50 text-gray-300"
             onPress={handleMinusClick}
-            className="bg-danger/50 hover:bg-danger/60 font-bold text-lg flex items-center justify-center text-white"
+            ref={buttonMinusRef}
+            data-action="decrease"
           >
-            -
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
+            </svg>
           </Button>
-          <span className="font-medium text-white w-4 text-center">{quantity}</span>
+          
+          <span className="font-mono text-white text-md w-4 text-center ml-1 mr-1">{quantity}</span>
+          
           <Button
+            isIconOnly
             size="sm"
             variant="flat"
-            color="default"
-            isIconOnly
-            ref={buttonPlusRef}
+            className="bg-secondary/50 text-white"
             onPress={handlePlusClick}
-            className="bg-secondary/50 hover:bg-secondary/60 font-bold text-lg flex items-center justify-center text-white"
+            ref={buttonPlusRef}
+            data-action="increase"
           >
-            +
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
           </Button>
         </div>
       </CardFooter>

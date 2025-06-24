@@ -45,9 +45,28 @@ export interface Order {
 // 推荐类型
 export interface Recommendation {
   beverage: string;
-  condiments: string[];
+  beverageName?: string;
+  condiments: Array<string | {
+    id: string;
+    name?: string;
+    quantity: number;
+  }>;
   reason: string;
-  explanation: string;
+  explanation?: string;
+}
+
+// AI模型信息类型
+export interface ModelInfo {
+  provider?: string;
+  model?: string;
+  error?: string;
+}
+
+// AI推荐结果类型
+export interface AiRecommendationResult {
+  recommendation: Recommendation;
+  code: string | null;
+  model_info: ModelInfo | null;
 }
 
 // 聊天消息类型
@@ -55,6 +74,7 @@ export interface ChatMessage {
   type: 'user' | 'bot';
   content: string;
   time: string;
+  model_info?: ModelInfo;
 }
 
 // API响应类型

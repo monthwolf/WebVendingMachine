@@ -30,7 +30,6 @@ def load_json_config(filename):
 # 加载配置
 BEVERAGES = load_json_config('beverages.json')
 CONDIMENTS = load_json_config('condiments.json')
-RECOMMENDATIONS = load_json_config('recommendations.json')
 
 def get_request_data():
     """安全获取请求数据"""
@@ -64,15 +63,36 @@ def get_order_history():
         }
     })
 
-@app.route('/api/recommendation', methods=['GET'])
-def get_recommendation():
-    """获取饮料推荐"""
-    # In a real app, this would be a more sophisticated recommendation engine
-    import random
+@app.route('/api/ai-recommendation', methods=['POST'])
+def get_ai_recommendation():
+    """获取AI大模型推荐"""
+    data = get_request_data()
+    user_preference = data.get('preference', '')
+    provider_name = data.get('provider')  # 可选参数，指定使用的模型提供商
+    model_name = data.get('model')  # 可选参数，指定使用的具体模型
+    template = data.get('template')  # 可选参数，前端传入的代码模板
+    
+    result = ai_recommendation.get_ai_recommendation(user_preference, provider_name, model_name, template)
+    if result is None:
+        result = {
+            "recommendation": ai_recommendation.get_recommendation(),
+            "code": None,
+            "model_info": {"error": "获取推荐失败"}
+        }
+    
+    return jsonify({
+        'success': True,
+        'data': result
+    })
+
+@app.route('/api/models/available', methods=['GET'])
+def get_available_models():
+    """获取可用的AI模型列表"""
     return jsonify({
         'success': True,
         'data': {
-            'recommendation': random.choice(RECOMMENDATIONS['recommendations'])
+            'providers': ai_recommendation.available_providers,
+            'provider_models': ai_recommendation.provider_models
         }
     })
 
@@ -81,16 +101,42 @@ def chat():
     """与聊天机器人对话"""
     data = get_request_data()
     message = data.get('message', '')
+    use_ai = data.get('use_ai', False)  # 是否使用大模型
+    provider_name = data.get('provider')  # 可选参数，指定使用的模型提供商
+    model_name = data.get('model')  # 可选参数，指定使用的具体模型
     
-    # 获取聊天机器人回应
-    response = chatbot.get_response(message) if message else chatbot.get_greeting()
+    if not message:
+        response = chatbot.get_greeting()
+        return jsonify({
+            'success': True,
+            'data': {
+                'content': response,
+                'model_info': None
+            }
+        })
     
-    return jsonify({
-        'success': True,
-        'data': {
-            'content': response
-        }
-    })
+    if use_ai and ai_recommendation.available_providers:
+        result = chatbot.get_ai_response(message, provider_name, model_name)
+        if result is None:
+            result = {
+                "content": chatbot.get_response(message),
+                "model_info": {"error": "AI回复生成失败"}
+            }
+        
+        return jsonify({
+            'success': True,
+            'data': result
+        })
+    else:
+        # 使用传统聊天机器人
+        response = chatbot.get_response(message)
+        return jsonify({
+            'success': True,
+            'data': {
+                'content': response,
+                'model_info': None
+            }
+        })
 
 def calculate_order_total(beverage_id, selected_condiments):
     """根据饮料和配料计算总价"""

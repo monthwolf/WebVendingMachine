@@ -28,4 +28,318 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* Markdown样式 */
+.markdown-content {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+}
+
+.markdown-content p {
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content p:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content h1 {
+  font-size: 1.25rem;
+}
+
+.markdown-content h2 {
+  font-size: 1.125rem;
+}
+
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  font-size: 1rem;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  padding-left: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content li {
+  margin-bottom: 0.25rem;
+}
+
+.markdown-content a {
+  color: #3b82f6;
+  text-decoration: underline;
+}
+
+.markdown-content code {
+  font-family: monospace;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.markdown-content pre {
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  overflow-x: auto;
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+.markdown-content blockquote {
+  border-left: 3px solid #4b5563;
+  padding-left: 0.5rem;
+  margin-left: 0.5rem;
+  color: #9ca3af;
+}
+
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid #4b5563;
+  padding: 0.25rem 0.5rem;
+  text-align: left;
+}
+
+.markdown-content th {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.markdown-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+.markdown-content strong {
+  font-weight: 600;
+  color: #f3f4f6;
+}
+
+.markdown-content em {
+  font-style: italic;
+  color: #d1d5db;
+}
+
+.markdown-content hr {
+  border: 0;
+  border-top: 1px solid #4b5563;
+  margin: 0.5rem 0;
+}
+
+/* 增强代码高亮样式 */
+.code-executable {
+  background-color: #1a2233 !important;
+  border: 1px solid #3d4d69 !important;
+  border-radius: 6px !important;
+  margin: 0.5rem 0 !important;
+  padding: 1rem !important;
+  font-size: 0.85rem !important;
+  line-height: 1.5 !important;
+  position: relative !important;
+  overflow-x: auto !important;
+}
+
+.code-executable::before {
+  content: "JavaScript";
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #364968;
+  color: #bbd6ff;
+  padding: 2px 8px;
+  font-size: 0.7rem;
+  border-bottom-left-radius: 4px;
+  border-top-right-radius: 4px;
+  font-family: monospace;
+}
+
+.code-executable code {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important;
+  color: #e7f2ff !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+/* 高亮颜色 */
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-built_in,
+.hljs-name {
+  color: #ff79c6 !important;
+}
+
+.hljs-string,
+.hljs-attr,
+.hljs-addition,
+.hljs-variable,
+.hljs-template-variable {
+  color: #a5e075 !important;
+}
+
+.hljs-comment,
+.hljs-quote,
+.hljs-deletion {
+  color: #6272a4 !important;
+  font-style: italic !important;
+}
+
+.hljs-function,
+.hljs-params,
+.hljs-literal {
+  color: #63c5ea !important;
+}
+
+.hljs-number,
+.hljs-regexp,
+.hljs-symbol {
+  color: #f1fa8c !important;
+}
+
+/* 确保Javascript字符串模板内的表达式高亮 */
+.hljs-subst {
+  color: #ffb86c !important;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-selector-id {
+  color: #50fa7b !important;
+  font-weight: bold !important;
+}
+
+/* 增强代码块视觉效果 */
+.code-executable::-webkit-scrollbar {
+  height: 8px !important;
+}
+
+.code-executable::-webkit-scrollbar-track {
+  background: #1a2233 !important;
+}
+
+.code-executable::-webkit-scrollbar-thumb {
+  background: #364968 !important;
+  border-radius: 4px !important;
+}
+
+.code-executable::-webkit-scrollbar-thumb:hover {
+  background: #4d6995 !important;
+}
+
+.language-javascript {
+  color: #badbff;
+}
+
+/* 扩展markdown代码块样式 */
+.markdown-content pre code.language-javascript {
+  color: #badbff;
+}
+
+.markdown-content pre {
+  margin-bottom: 0.75rem;
+  background-color: #1a2233;
+  border: 1px solid #3d4d69;
+}
+
+/* 可调整大小容器样式 */
+.resize-container {
+  position: relative;
+}
+
+/* 自定义调整大小的句柄样式 */
+.react-resizable-handle {
+  position: absolute;
+  background-color: rgba(66, 153, 225, 0.2);
+  border-radius: 50%;
+  width: 12px !important;
+  height: 12px !important;
+  transition: background-color 0.2s, transform 0.1s;
+  z-index: 10;
+}
+
+.react-resizable-handle:hover {
+  background-color: rgba(66, 153, 225, 0.8);
+  transform: scale(1.1);
+}
+
+/* 调整各个方向句柄的位置 */
+.react-resizable-handle-se {
+  bottom: -5px !important;
+  right: -5px !important;
+  cursor: se-resize;
+}
+
+.react-resizable-handle-sw {
+  bottom: -5px !important;
+  left: -5px !important;
+  cursor: sw-resize;
+}
+
+.react-resizable-handle-ne {
+  top: -5px !important;
+  right: -5px !important;
+  cursor: ne-resize;
+}
+
+.react-resizable-handle-nw {
+  top: -5px !important;
+  left: -5px !important;
+  cursor: nw-resize;
+}
+
+.react-resizable-handle-n {
+  top: -5px !important;
+  left: 50% !important;
+  margin-left: -6px !important;
+  cursor: n-resize;
+}
+
+.react-resizable-handle-e {
+  top: 50% !important;
+  right: -5px !important;
+  margin-top: -6px !important;
+  cursor: e-resize;
+}
+
+.react-resizable-handle-s {
+  bottom: -5px !important;
+  left: 50% !important;
+  margin-left: -6px !important;
+  cursor: s-resize;
+}
+
+.react-resizable-handle-w {
+  top: 50% !important;
+  left: -5px !important;
+  margin-top: -6px !important;
+  cursor: w-resize;
+}
+
+/* 调整大小时的过渡效果 */
+.resize-container .card {
+  transition: width 0.1s, height 0.1s;
 } 

@@ -151,6 +151,7 @@ export const BeverageCard: React.FC<BeverageCardProps> = ({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       ref={cardRef}
+      data-beverage-id={beverage.id}
     >
       <CardHeader className="p-0 overflow-hidden">
         <div ref={imageRef} className="relative w-full aspect-[4/3]">
