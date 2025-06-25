@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# 前端使用的自动选择代码模板
-AUTO_SELECT_TEMPLATE = """// 自动选择饮品和配料
-// 可以根据需要修改以下变量
-const targetBeverage = "{{BEVERAGE_ID}}"; // 饮品ID，例如: "latte"
+# 自动选择饮料和配料的模板代码
+AUTO_SELECT_TEMPLATE = """
+// 自动选择饮料和配料
+const targetBeverage = "{{BEVERAGE_ID}}"; // 饮品ID
 const targetCondiments = [
-  { id: "{{CONDIMENT_ID}}", quantity: {{QUANTITY}} }, // 配料ID和数量，例如: { id: "sugar", quantity: 2 }
+  { id: "{{CONDIMENT_ID}}", quantity: {{QUANTITY}} },
   // 可以添加更多配料...
 ];
 
@@ -160,20 +160,9 @@ function selectCondiments() {
   processCondiments(0);
 }
 
-// 开始自动选择流程的函数
-function startAutomation() {
-  console.log('开始自动选择流程...');
-  
-  // 1. 清空当前选择
-  clearCurrentSelection();
-  
-  // 2. 确保我们在饮品选择页，然后选择饮品
-  checkAndReturnToBeveragePage(function() {
-    // 3. 延迟后选择饮品
-    setTimeout(selectBeverage, 500);
-  });
-}
-
 // 开始执行自动选择流程
-startAutomation();
+clearCurrentSelection();
+checkAndReturnToBeveragePage(function() {
+  setTimeout(selectBeverage, 500);
+});
 """ 
